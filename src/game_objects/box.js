@@ -4,7 +4,7 @@ export default class Box extends GameObject {
     constructor (canvasWidth, canvasHeight, width) {
         super();
         if (!width) {
-            width = 2;
+            width = 0.5;
         }
         this.width = width;
         this.canvasWidth = canvasWidth;

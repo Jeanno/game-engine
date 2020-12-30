@@ -5,7 +5,7 @@ export default class Physics {
         this.gravity = new B2D.b2Vec2(0.0, 10.0);
         this.world = new B2D.b2World(this.gravity);
         this.bodies = {};
-        this.shouldRemove = [];
+        this.collisions = [];
 
         const bd_ground = new B2D.b2BodyDef();
         const ground = this.world.CreateBody(bd_ground);
@@ -25,8 +25,7 @@ export default class Physics {
             const goIdA = bodyA.goId;
             const goIdB = bodyB.goId;
             if (goIdA && goIdB) {
-                this.shouldRemove.push(goIdA);
-                this.shouldRemove.push(goIdB);
+                this.collisions.push([goIdA, goIdB]);
             }
         }.bind(this);
 
@@ -44,6 +43,9 @@ export default class Physics {
             return;
         }
         if (physics.bodyDef && physics.shape) {
+            const bodyDef = physics.bodyDef;
+            bodyDef.position.x = go.x;
+            bodyDef.position.y = go.y;
             const body = this.world.CreateBody(physics.bodyDef);
             body.CreateFixture(physics.shape, 5.0);
             body.SetAwake(1);
@@ -68,13 +70,27 @@ export default class Physics {
     tick (timePassed) {
         const iterations = Math.floor(timePassed / 10);
         this.world.Step(timePassed / 1000, iterations, iterations);
-        for (const goId of this.shouldRemove) {
-            const pair = this.bodies[goId];
-            if (pair) {
-                pair[1].removeFromGame();
+        for (const pair of this.collisions) {
+            const id1 = pair[0];
+            const id2 = pair[1];
+            const pair1 = this.bodies[id1];
+            const pair2 = this.bodies[id2];
+            if (pair1 && pair2) {
+                const box1 = pair1[1];
+                const box2 = pair2[1];
+                if (box1.width === box2.width) {
+                    const newWidth = Math.sqrt(box1.width * box1.width + box2.width * box2.width);
+                    const newBox = new Box(0, 0, newWidth);
+                    newBox.x = (box1.x + box2.x) / 2;
+                    newBox.y = (box1.y + box2.y) / 2;
+                    newBox.rotation = (box1.rotation + box2.rotation) / 2;
+                    box1.game.addChild(newBox);
+                    box1.removeFromGame();
+                    box2.removeFromGame();
+                }
             }
         }
-        this.shouldRemove = [];
+        this.collisions = [];
         for (const key in this.bodies) {
             const pair = this.bodies[key];
             const body = pair[0];

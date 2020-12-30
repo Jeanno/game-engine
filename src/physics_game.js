@@ -28,7 +28,7 @@ export default class PhysicsGame extends Game {
 
         this.stage.addChild(bg);
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 0; i++) {
             const box = new Box(width, height);
             this.addChild(box);
         }
@@ -44,7 +44,7 @@ export default class PhysicsGame extends Game {
         this.tickCount += 1;
         const width = 64;
         const height = 48;
-        if ((this.tickCount % 1) === 0 && this.tickCount < 0) {
+        if ((this.tickCount % 1) === 0 && this.tickCount < 10000) {
             const box = new Box(width, height);
             this.addChild(box);
         }
