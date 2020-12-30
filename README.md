@@ -3,6 +3,8 @@
 ## TODO
 - Physics
   - Better interface
+- Combine partical reaction
+- Scene
 - Mobile control
 - Show training progress
 - Graphics

@@ -1,13 +1,14 @@
 import GameObject from '../../engine/game_object';
 
-const WIDTH = 2;
-let shareShape = null;
 export default class Box extends GameObject {
-    constructor (canvasWidth, canvasHeight) {
+    constructor (canvasWidth, canvasHeight, width) {
         super();
+        if (!width) {
+            width = 2;
+        }
+        this.width = width;
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
-        const width = WIDTH;
         const hw = width / 2;
         this.displayObject = new createjs.Shape();
 
@@ -29,13 +30,14 @@ export default class Box extends GameObject {
         const bd = this.physics.bodyDef = new B2D.b2BodyDef();
         bd.set_type(B2D.b2_dynamicBody);
         bd.set_position(vec);
-        this.physics.shape = Box.getShareShape();
+        this.physics.shape = this.getShape();
 
         this.totalTimePassed = 0;
     }
 
     tick (timePassed) {
         this.totalTimePassed += timePassed;
+        return;
         if (this.totalTimePassed > 5000) {
             const canvasWidth = this.canvasWidth;
             const canvasHeight = this.canvasHeight;
@@ -46,13 +48,15 @@ export default class Box extends GameObject {
         }
     }
 
-    static getShareShape () {
-        if (!shareShape) {
-            const hw = WIDTH / 2;
-            shareShape = new B2D.b2PolygonShape();
-            shareShape.SetAsBox(hw, hw);
-        }
-        return shareShape;
+    removeFromGame() {
+        this.game.removeChild(this);
+    }
+
+    getShape () {
+        const hw = this.width / 2;
+        const shape = new B2D.b2PolygonShape();
+        shape.SetAsBox(hw, hw);
+        return shape;
     }
 }
 

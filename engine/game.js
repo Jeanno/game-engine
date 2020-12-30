@@ -10,7 +10,7 @@ export default class Game {
         this.rootStage.addChild(this.stage);
 
         this.gameObjects = {};
-        this.goIdCounter = 0;
+        this.goIdCounter = 1;
         this.keyPressed = [];
         this.lastTickTime = null;
         this.physics = null;

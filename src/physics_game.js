@@ -28,7 +28,7 @@ export default class PhysicsGame extends Game {
 
         this.stage.addChild(bg);
 
-        for (let i = 0; i < 500; i++) {
+        for (let i = 0; i < 10; i++) {
             const box = new Box(width, height);
             this.addChild(box);
         }
