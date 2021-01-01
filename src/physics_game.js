@@ -44,7 +44,7 @@ export default class PhysicsGame extends Game {
         this.tickCount += 1;
         const width = 64;
         const height = 48;
-        if ((this.tickCount % 1) === 0 && this.tickCount < 10000) {
+        if ((this.tickCount % 1) === 0 && this.tickCount < 100000) {
             const box = new Box(width, height);
             this.addChild(box);
         }
