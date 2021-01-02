@@ -38,7 +38,7 @@ export default class Physics {
 
     addChild (gameObject) {
         const go = gameObject;
-        const physics = go.physics;
+        const physics = go.modules.physics;
         if (!physics) {
             return;
         }
@@ -63,7 +63,7 @@ export default class Physics {
         if (pair) {
             this.world.DestroyBody(pair[0]);
             delete this.bodies[gameObject.goId];
-            gameObject.physics.body = null;
+            gameObject.modules.physics.body = null;
         }
     }
 
@@ -96,9 +96,15 @@ export default class Physics {
             const body = pair[0];
             const go = pair[1];
             const pos = body.GetPosition();
-            go.x = pos.get_x();
-            go.y = pos.get_y();
-            go.angle = body.GetAngle() / Math.PI * 180;
+
+            // Copying the value out in advanced to avoid gameObject
+            // onPositionAndAngleChange overwrites body properties
+            const posx = pos.x;
+            const posy = pos.y;
+            const angle = body.GetAngle();
+            go.x = posx;
+            go.y = posy;
+            go.angle = angle / Math.PI * 180;
         }
     }
 }

@@ -42,13 +42,23 @@ export default class Game {
         if (this.physics) {
             this.physics.addChild(go);
         }
-        this.stage.addChild(go.displayObject);
+        if (go.modules.display) {
+            const displayObj = go.modules.display.displayObject;
+            if (displayObj) {
+                this.stage.addChild(displayObj);
+            }
+        }
     }
 
     removeChild (gameObject) {
         const go = this.gameObjects[gameObject.goId];
         if (go) {
-            this.stage.removeChild(go.displayObject);
+            if (go.modules.display) {
+                const displayObj = go.modules.display.displayObject;
+                if (displayObj) {
+                    this.stage.removeChild(displayObj);
+                }
+            }
             if (this.physics) {
                 this.physics.removeChild(go);
             }

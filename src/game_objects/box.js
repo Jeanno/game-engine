@@ -1,4 +1,6 @@
 import GameObject from '../../engine/game_object';
+import DisplayModule from '../../engine/modules/display_module';
+import PhysicsModule from '../../engine/modules/physics_module';
 
 export default class Box extends GameObject {
     constructor (canvasWidth, canvasHeight, width) {
@@ -11,6 +13,8 @@ export default class Box extends GameObject {
         this.canvasHeight = canvasHeight;
         const hw = width / 2;
         this.displayObject = new createjs.Shape();
+        this.modules.display = new DisplayModule(this);
+        this.modules.display.displayObject = this.displayObject;
 
         const rand3 = Math.floor(Math.random() * 3);
         let color;
@@ -22,15 +26,15 @@ export default class Box extends GameObject {
             color = "Yellow";
         }
         this.displayObject.graphics.beginFill(color).drawRect(-hw, -hw, width, width);
-        this.x = Math.floor(Math.random() * canvasWidth) / 16 + canvasWidth / 2;
-        this.y = -Math.floor(Math.random() * canvasHeight * 3);
+        this.x = Math.random() * canvasWidth / 16 + canvasWidth / 2;
+        this.y = -Math.random() * canvasHeight;
 
-        const physics = this.physics = {};
+        const physics = this.modules.physics = new PhysicsModule(this);
         const vec = new B2D.b2Vec2(this.x, this.y);
-        const bd = this.physics.bodyDef = new B2D.b2BodyDef();
+        const bd = physics.bodyDef = new B2D.b2BodyDef();
         bd.set_type(B2D.b2_dynamicBody);
         bd.set_position(vec);
-        this.physics.shape = this.getShape();
+        physics.shape = this.getShape();
 
         this.totalTimePassed = 0;
     }

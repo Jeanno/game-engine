@@ -6,6 +6,8 @@ export default class GameObject {
         this._y = 0;
         this._angle = 0;
         this.inactive = false;
+        this.modules = {};
+        this._position = null;
     }
 
     get x () {
@@ -14,16 +16,8 @@ export default class GameObject {
 
     set x (value) {
         this._x = value;
-        if (this.displayObject) {
-            this.displayObject.x = value;
-        }
-        if (this.physics) {
-            const body = this.physics.body;
-            if (body) {
-                const pos = body.GetPosition();
-                pos.x = value;
-                body.SetTransform(pos, body.GetAngle());
-            }
+        for (const key in this.modules) {
+            this.modules[key].onPositionAndAngleChanged();
         }
     }
 
@@ -33,16 +27,8 @@ export default class GameObject {
 
     set y (value) {
         this._y = value;
-        if (this.displayObject) {
-            this.displayObject.y = value;
-        }
-        if (this.physics) {
-            const body = this.physics.body;
-            if (body) {
-                const pos = body.GetPosition();
-                pos.y = value;
-                body.SetTransform(pos, body.GetAngle());
-            }
+        for (const key in this.modules) {
+            this.modules[key].onPositionAndAngleChanged();
         }
     }
 
@@ -52,15 +38,20 @@ export default class GameObject {
 
     set angle (value) {
         this._angle = value;
-        if (this.displayObject) {
-            this.displayObject.rotation = value;
+        for (const key in this.modules) {
+            this.modules[key].onPositionAndAngleChanged();
         }
-        if (this.physics) {
-            const body = this.physics.body;
-            if (body) {
-                const pos = body.GetPosition();
-                body.SetTransform(pos, value / 180 * Math.PI);
-            }
+    }
+
+    get position () {
+        return this._position;
+    }
+
+    set position (value) {
+        this._position = value;
+        // TODO: Notify all modules about position change
+        for (const key in this.modules) {
+            this.modules[key].onPositionAndAngleChanged();
         }
     }
 
