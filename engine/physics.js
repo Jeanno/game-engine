@@ -1,4 +1,5 @@
 import Box from '../src/game_objects/box';
+import Vector from './vector';
 
 export default class Physics {
     constructor () {
@@ -44,8 +45,8 @@ export default class Physics {
         }
         if (physics.bodyDef && physics.shape) {
             const bodyDef = physics.bodyDef;
-            bodyDef.position.x = go.x;
-            bodyDef.position.y = go.y;
+            bodyDef.position.x = go.position.values[0];
+            bodyDef.position.y = go.position.values[1];
             const body = this.world.CreateBody(physics.bodyDef);
             body.CreateFixture(physics.shape, 5.0);
             body.SetAwake(1);
@@ -81,9 +82,11 @@ export default class Physics {
                 if (box1.width === box2.width) {
                     const newWidth = Math.sqrt(box1.width * box1.width + box2.width * box2.width);
                     const newBox = new Box(0, 0, newWidth);
-                    newBox.x = (box1.x + box2.x) / 2;
-                    newBox.y = (box1.y + box2.y) / 2;
-                    newBox.rotation = (box1.rotation + box2.rotation) / 2;
+                    const pos = box1.position.clone();
+                    pos.add(box2.position);
+                    pos.multiply(0.5);
+                    newBox.position = pos;
+                    newBox.angle = (box1.angle + box2.angle) / 2;
                     box1.game.addChild(newBox);
                     box1.removeFromGame();
                     box2.removeFromGame();
@@ -99,11 +102,9 @@ export default class Physics {
 
             // Copying the value out in advanced to avoid gameObject
             // onPositionAndAngleChange overwrites body properties
-            const posx = pos.x;
-            const posy = pos.y;
             const angle = body.GetAngle();
-            go.x = posx;
-            go.y = posy;
+            const newPos = new Vector([pos.x, pos.y]);
+            go.position = newPos;
             go.angle = angle / Math.PI * 180;
         }
     }

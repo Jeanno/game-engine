@@ -12,8 +12,8 @@ export default class PhysicsModule extends Module {
         const go = this.gameObject;
         if (this.body) {
             const pos = this.body.GetPosition();
-            pos.x = go.x;
-            pos.y = go.y;
+            pos.x = go.position.values[0];
+            pos.y = go.position.values[1];
             this.body.SetTransform(pos, go.angle / 180 * Math.PI);
         }
     }

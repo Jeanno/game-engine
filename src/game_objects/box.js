@@ -1,6 +1,7 @@
 import GameObject from '../../engine/game_object';
 import DisplayModule from '../../engine/modules/display_module';
 import PhysicsModule from '../../engine/modules/physics_module';
+import Vector from '../../engine/vector';
 
 export default class Box extends GameObject {
     constructor (canvasWidth, canvasHeight, width) {
@@ -26,11 +27,12 @@ export default class Box extends GameObject {
             color = "Yellow";
         }
         this.displayObject.graphics.beginFill(color).drawRect(-hw, -hw, width, width);
-        this.x = Math.random() * canvasWidth / 16 + canvasWidth / 2;
-        this.y = -Math.random() * canvasHeight;
+        const pos = this.position = new Vector([
+            Math.random() * canvasWidth / 16 + canvasWidth / 2,
+            -Math.random() * canvasHeight]);
 
         const physics = this.modules.physics = new PhysicsModule(this);
-        const vec = new B2D.b2Vec2(this.x, this.y);
+        const vec = new B2D.b2Vec2(pos.values[0], pos.values[1]);
         const bd = physics.bodyDef = new B2D.b2BodyDef();
         bd.set_type(B2D.b2_dynamicBody);
         bd.set_position(vec);
