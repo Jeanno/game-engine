@@ -29,7 +29,7 @@ export default class Box extends GameObject {
         this.displayObject.graphics.beginFill(color).drawRect(-hw, -hw, width, width);
         const pos = this.position = new Vector([
             Math.random() * canvasWidth / 16 + canvasWidth / 2,
-            -Math.random() * canvasHeight]);
+            Math.random() * canvasHeight]);
 
         const physics = this.modules.physics = new PhysicsModule(this);
         const vec = new B2D.b2Vec2(pos.values[0], pos.values[1]);

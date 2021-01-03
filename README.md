@@ -4,6 +4,8 @@ Demo: https://jeanno.github.io/game-engine/demo/v0.1.0/index.html
 
 ## Features
 ### Done
+- Scene
+- Game Object Modules
 - Physics Remove
 - Viewport
 - Separate game engine
@@ -14,10 +16,11 @@ Demo: https://jeanno.github.io/game-engine/demo/v0.1.0/index.html
 - Bullet motions
 - Timer
 
+### Working on
+
 ### TODO
-- Game Object Modules
 - Physics
   - Better interface
-- Scene
+- Demo Car physics
 - Mobile control
 

@@ -1,4 +1,3 @@
-import Physics from './physics';
 const TARGET_FRAME_RATE = 60;
 const TARGET_TICK_INTERVAL = 1000 / TARGET_FRAME_RATE;
 
@@ -6,14 +5,10 @@ export default class Game {
     constructor (canvasId) {
         this.canvasId = canvasId;
         this.rootStage = new createjs.Stage(canvasId);
-        this.stage = new createjs.Container();
-        this.rootStage.addChild(this.stage);
+        this.activeScene = null;
 
-        this.gameObjects = {};
-        this.goIdCounter = 1;
         this.keyPressed = [];
         this.lastTickTime = null;
-        this.physics = null;
 
         document.onkeydown = function (e) {
             e = e || window.event;
@@ -34,40 +29,13 @@ export default class Game {
         this.tick();
     }
 
-    addChild (gameObject) {
-        const go = gameObject;
-        go.game = this;
-        go.goId = this.goIdCounter++;
-        this.gameObjects[go.goId] = go;
-        if (this.physics) {
-            this.physics.addChild(go);
+    setActiveScene (scene) {
+        if (this.activeScene) {
+            this.rootStage.removeChild(this.activeScene.stage);
         }
-        if (go.modules.display) {
-            const displayObj = go.modules.display.displayObject;
-            if (displayObj) {
-                this.stage.addChild(displayObj);
-            }
-        }
-    }
-
-    removeChild (gameObject) {
-        const go = this.gameObjects[gameObject.goId];
-        if (go) {
-            if (go.modules.display) {
-                const displayObj = go.modules.display.displayObject;
-                if (displayObj) {
-                    this.stage.removeChild(displayObj);
-                }
-            }
-            if (this.physics) {
-                this.physics.removeChild(go);
-            }
-            delete this.gameObjects[go.goId];
-            go.goId = null;
-        }
-    }
-
-    handlePlayerControl () {
+        scene.game = this;
+        this.rootStage.addChild(scene.stage);
+        this.activeScene = scene;
     }
 
     tick () {
@@ -75,15 +43,9 @@ export default class Game {
         const timeBetweenTicks = tickStartTime - this.lastTickTime;
         //console.debug("timeBetweenTicks", timeBetweenTicks);
 
-        this.handlePlayerControl();
-        if (this.physics) {
-            this.physics.tick(timeBetweenTicks);
-        }
-        for (const key in this.gameObjects) {
-            const obj = this.gameObjects[key];
-            if (!obj.inactive) {
-                obj.tick(timeBetweenTicks);
-            }
+        this.handleUserInput();
+        if (this.activeScene) {
+            this.activeScene.tick(timeBetweenTicks);
         }
 
         this.rootStage.update();
@@ -94,19 +56,8 @@ export default class Game {
         //console.debug("tickElapsed", tickElapsedTime);
     }
 
-    enablePhysics () {
-        this.physics = new Physics();
+    handleUserInput (timePassedMs) {
     }
 
-    setViewportScale (scale) {
-        this.stage.x *= scale / this.stage.scale;
-        this.stage.y *= scale / this.stage.scale;
-        this.stage.scale = scale;
-    }
-
-    setViewportPosition (x, y) {
-        this.stage.x = -x * this.stage.scale;
-        this.stage.y = -y * this.stage.scale;;
-    }
 }
 

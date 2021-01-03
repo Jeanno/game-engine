@@ -1,4 +1,3 @@
-import MissionGame from './mission_game';
 import PhysicsGame from './physics_game';
 
 async function init () {
